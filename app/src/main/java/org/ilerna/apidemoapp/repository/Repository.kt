@@ -1,8 +1,8 @@
 package org.ilerna.apidemoapp.repository
 
-import org.ilerna.apidemoapp.api.ApiInterface
+import org.ilerna.apidemoapp.api.DragonBallApiInterface
 
 class Repository {
-    val apiInterface = ApiInterface.create()
-    suspend fun getAllCharacters() = apiInterface.getData()
+    val dragonBallApiInterface = DragonBallApiInterface.create()
+    suspend fun getAllCharacters() = dragonBallApiInterface.getData()
 }
