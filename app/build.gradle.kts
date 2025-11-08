@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.serialization)
 }
 
 android {
@@ -56,4 +57,16 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    // Live Data
+    implementation(libs.androidx.compose.runtime.livedata)
+    // Navigation Component for Compose
+    implementation(libs.navigation.compose)
+    // Kotlinx Serialization
+    implementation(libs.kotlinx.serialization.json)
+    // Retrofit and OkHttp
+    implementation(libs.retrofit)
+    // Gson Converter and Logging Interceptor
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
 }
