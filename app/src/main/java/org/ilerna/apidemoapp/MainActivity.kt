@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.ilerna.apidemoapp.ui.theme.ApiDemoAppTheme
+import org.ilerna.apidemoapp.ui.theme.AppTheme
 import org.ilerna.apidemoapp.view.HomeScreen
 import org.ilerna.apidemoapp.viewmodel.APIViewModel
 
@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ApiDemoAppTheme {
+            AppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val viewModel: APIViewModel = viewModel()
                     HomeScreen(
