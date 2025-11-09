@@ -7,22 +7,23 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.ilerna.apidemoapp.model.PeopleData
+import org.ilerna.apidemoapp.model.CharactersResponse
 import org.ilerna.apidemoapp.repository.Repository
 
 class APIViewModel : ViewModel() {
     private val repository = Repository()
-    private val _characters = MutableLiveData<PeopleData>()
+    private val _characters = MutableLiveData<CharactersResponse>()
     val characters = _characters
 
-    fun getCharacters() {
+    fun getCharacters(page: Int = 1, limit: Int = 100) {
         CoroutineScope(Dispatchers.IO).launch {
-            val response = repository.getAllCharacters()
+            val response = repository.getAllCharacters(page, limit)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     _characters.value = response.body()
+                    Log.d("APIViewModel", "Characters loaded: ${response.body()?.items?.size}")
                 } else {
-                    Log.e("Error :", response.message())
+                    Log.e("APIViewModel", "Error: ${response.message()}")
                 }
             }
         }
