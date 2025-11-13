@@ -1,4 +1,4 @@
-package org.ilerna.apidemoapp.model
+package org.ilerna.apidemoapp.domain.model
 
 /**
  * Transformation model

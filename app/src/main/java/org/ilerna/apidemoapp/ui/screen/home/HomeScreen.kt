@@ -1,4 +1,4 @@
-package org.ilerna.apidemoapp.view
+package org.ilerna.apidemoapp.ui.screen.home
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,12 +21,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.ilerna.apidemoapp.R
-import org.ilerna.apidemoapp.model.DBCharacter
-import org.ilerna.apidemoapp.viewmodel.APIViewModel
+import org.ilerna.apidemoapp.domain.model.DBCharacter
+import org.ilerna.apidemoapp.ui.theme.AppTypography
+import org.ilerna.apidemoapp.ui.screen.home.HomeViewModel
 
 /**
  * HomeScreen - Pantalla principal que muestra la lista de personajes de Dragon Ball
@@ -36,7 +37,7 @@ import org.ilerna.apidemoapp.viewmodel.APIViewModel
  */
 @Composable
 fun HomeScreen(
-    viewModel: APIViewModel,
+    viewModel: HomeViewModel,
     modifier: Modifier = Modifier
 ) {
     val charactersResponse by viewModel.characters.observeAsState()
@@ -74,6 +75,7 @@ fun HomeScreen(
  */
 @Composable
 fun DragonBallHeader(modifier: Modifier = Modifier) {
+    val colors = MaterialTheme.colorScheme
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -94,7 +96,7 @@ fun DragonBallHeader(modifier: Modifier = Modifier) {
     // Divisor naranja (color secundario de Dragon Ball)
     HorizontalDivider(
         thickness = 10.dp,
-        color = Color(0xFFF39122) // Naranja de Dragon Ball
+        color = colors.primaryContainer
     )
 }
 
@@ -109,10 +111,15 @@ fun CharacterCard(
     character: DBCharacter,
     modifier: Modifier = Modifier
 ) {
+    val colors = MaterialTheme.colorScheme
+    
     Card(
-        border = BorderStroke(2.dp, Color.LightGray),
+        border = BorderStroke(2.dp, colors.primary),
         shape = RoundedCornerShape(8.dp),
-        modifier = modifier.padding(8.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = colors.primaryContainer
+        ),
+        modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Column(
             modifier = Modifier
@@ -122,23 +129,24 @@ fun CharacterCard(
             // Nombre del personaje
             Text(
                 text = character.name,
-                style = MaterialTheme.typography.titleLarge,
+                style = AppTypography.titleLarge,
+                color = colors.onPrimaryContainer,
                 modifier = Modifier.fillMaxWidth()
             )
 
             // Raza del personaje
             Text(
                 text = "Raza: ${character.race}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray,
+                style = AppTypography.bodyMedium,
+                color = colors.onPrimaryContainer.copy(alpha = 0.8f),
                 modifier = Modifier.fillMaxWidth()
             )
 
             // Nivel de poder (Ki)
             Text(
                 text = "Ki: ${character.ki}",
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Blue,
+                style = AppTypography.bodySmall,
+                color = colors.onPrimaryContainer,
                 modifier = Modifier.fillMaxWidth()
             )
         }

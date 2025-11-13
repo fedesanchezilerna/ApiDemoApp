@@ -1,9 +1,9 @@
-package org.ilerna.apidemoapp.repository
+package org.ilerna.apidemoapp.domain.repository
 
-import org.ilerna.apidemoapp.api.DragonBallApiInterface
+import org.ilerna.apidemoapp.data.remote.DragonBallApiInterface
 
 class Repository {
-    private val apiInterface = DragonBallApiInterface.create()
+    private val apiInterface = DragonBallApiInterface.Companion.create()
 
     suspend fun getAllCharacters(page: Int = 1, limit: Int = 10) =
         apiInterface.getCharacters(page, limit)

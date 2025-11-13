@@ -10,8 +10,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ilerna.apidemoapp.ui.theme.AppTheme
-import org.ilerna.apidemoapp.view.HomeScreen
-import org.ilerna.apidemoapp.viewmodel.APIViewModel
+import org.ilerna.apidemoapp.ui.screen.home.HomeScreen
+import org.ilerna.apidemoapp.ui.screen.home.HomeViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val viewModel: APIViewModel = viewModel()
+                    val viewModel: HomeViewModel = viewModel()
                     HomeScreen(
                         viewModel = viewModel,
                         modifier = Modifier.padding(innerPadding)

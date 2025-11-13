@@ -1,6 +1,15 @@
 package org.ilerna.apidemoapp.ui.theme
 import androidx.compose.ui.graphics.Color
 
+/*
+* Primary           #e96c26
+* Secondary         #01080a
+* Tertiary          #1c4595
+* Error             #fbbc42
+* Neutral           #998F8B
+* Neutral Variant   #A08D85
+* */
+
 val primaryLight = Color(0xFF9D3E00)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFC45104)

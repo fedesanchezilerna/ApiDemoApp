@@ -1,4 +1,4 @@
-package org.ilerna.apidemoapp.viewmodel
+package org.ilerna.apidemoapp.ui.screen.home
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -7,10 +7,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.ilerna.apidemoapp.model.CharactersResponse
-import org.ilerna.apidemoapp.repository.Repository
+import org.ilerna.apidemoapp.domain.model.CharactersResponse
+import org.ilerna.apidemoapp.domain.repository.Repository
 
-class APIViewModel : ViewModel() {
+class HomeViewModel : ViewModel() {
     private val repository = Repository()
     private val _characters = MutableLiveData<CharactersResponse>()
     val characters = _characters

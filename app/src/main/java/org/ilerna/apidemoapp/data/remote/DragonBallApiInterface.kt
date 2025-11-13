@@ -1,9 +1,9 @@
-package org.ilerna.apidemoapp.api
+package org.ilerna.apidemoapp.data.remote
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.ilerna.apidemoapp.model.CharactersResponse
-import org.ilerna.apidemoapp.model.DBCharacter
+import org.ilerna.apidemoapp.domain.model.CharactersResponse
+import org.ilerna.apidemoapp.domain.model.DBCharacter
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -46,8 +46,7 @@ interface DragonBallApiInterface {
                 .addInterceptor(logging)
                 .build()
 
-            val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
+            val retrofit = Retrofit.Builder().baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()
