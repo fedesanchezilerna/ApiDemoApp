@@ -13,18 +13,18 @@ import retrofit2.http.Query
 
 interface DragonBallApiInterface {
 
-    // Obtener lista de personajes con paginación
+    // Get Dragon Ball characters with pagination
     @GET("characters")
     suspend fun getCharacters(
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 10
     ): Response<CharactersResponse>
 
-    // Obtener personaje por ID (incluye originPlanet y transformations)
+    // Get character by ID (includes originPlanet and transformations)
     @GET("characters/{id}")
     suspend fun getCharacterById(@Path("id") id: Int): Response<DBCharacter>
 
-    // Filtrar personajes (sin paginación)
+    // Filter characters (without pagination)
     @GET("characters")
     suspend fun filterCharacters(
         @Query("name") name: String? = null,
@@ -37,7 +37,7 @@ interface DragonBallApiInterface {
         const val BASE_URL = "https://dragonball-api.com/api/"
 
         fun create(): DragonBallApiInterface {
-            // Logging interceptor para debug
+            // Logging interceptor for debug
             val logging = HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             }

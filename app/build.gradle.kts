@@ -70,4 +70,6 @@ dependencies {
     // Gson Converter and Logging Interceptor
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
+    // Material Icons Extended
+    implementation(libs.androidx.compose.material.icons.extended)
 }

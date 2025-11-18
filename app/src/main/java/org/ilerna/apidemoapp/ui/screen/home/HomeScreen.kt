@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import org.ilerna.apidemoapp.R
 import org.ilerna.apidemoapp.domain.model.DBCharacter
 import org.ilerna.apidemoapp.ui.theme.AppTypography
-import org.ilerna.apidemoapp.ui.screen.home.HomeViewModel
 
 /**
  * HomeScreen - Pantalla principal que muestra la lista de personajes de Dragon Ball
@@ -112,7 +111,7 @@ fun CharacterCard(
     modifier: Modifier = Modifier
 ) {
     val colors = MaterialTheme.colorScheme
-    
+
     Card(
         border = BorderStroke(2.dp, colors.primary),
         shape = RoundedCornerShape(8.dp),
