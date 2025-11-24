@@ -21,7 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,6 +37,8 @@ import coil.compose.AsyncImage
 import org.ilerna.apidemoapp.domain.model.DBCharacter
 import org.ilerna.apidemoapp.domain.model.Planet
 import org.ilerna.apidemoapp.domain.model.Transformation
+import org.ilerna.apidemoapp.ui.components.InfoCard
+import org.ilerna.apidemoapp.ui.components.InfoRow
 import org.ilerna.apidemoapp.ui.theme.AppTypography
 
 /**
@@ -200,77 +201,6 @@ fun CharacterDetailsContent(
 }
 
 /**
- * InfoCard - Card container for information sections
- */
-@Composable
-fun InfoCard(
-    title: String,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
-    val colors = MaterialTheme.colorScheme
-
-    Card(
-        border = BorderStroke(2.dp, colors.primary),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = colors.surface
-        ),
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                text = title,
-                style = AppTypography.titleMedium,
-                color = colors.primary,
-                fontWeight = FontWeight.Bold
-            )
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = 8.dp),
-                thickness = 1.dp,
-                color = colors.primary.copy(alpha = 0.3f)
-            )
-            content()
-        }
-    }
-}
-
-/**
- * InfoRow - Display a label-value pair
- */
-@Composable
-fun InfoRow(
-    label: String,
-    value: String,
-    modifier: Modifier = Modifier
-) {
-    val colors = MaterialTheme.colorScheme
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = "$label:",
-            style = AppTypography.bodyMedium,
-            color = colors.onSurface.copy(alpha = 0.7f),
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            text = value,
-            style = AppTypography.bodyMedium,
-            color = colors.onSurface
-        )
-    }
-}
-
-/**
  * PlanetCard - Card displaying origin planet information
  */
 @Composable
@@ -280,67 +210,45 @@ fun PlanetCard(
 ) {
     val colors = MaterialTheme.colorScheme
 
-    Card(
-        border = BorderStroke(2.dp, colors.primary),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = colors.surface
-        ),
+    InfoCard(
+        title = "Origin Planet",
         modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = "Origin Planet",
-                style = AppTypography.titleMedium,
-                color = colors.primary,
-                fontWeight = FontWeight.Bold
-            )
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = 8.dp),
-                thickness = 1.dp,
-                color = colors.primary.copy(alpha = 0.3f)
+            // Planet Image
+            AsyncImage(
+                model = planet.image,
+                contentDescription = planet.name,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(CircleShape)
             )
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            // Planet Info
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                // Planet Image
-                AsyncImage(
-                    model = planet.image,
-                    contentDescription = planet.name,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(CircleShape)
+                Text(
+                    text = planet.name,
+                    style = AppTypography.titleSmall,
+                    color = colors.onSurface,
+                    fontWeight = FontWeight.Bold
                 )
-
-                // Planet Info
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        text = planet.name,
-                        style = AppTypography.titleSmall,
-                        color = colors.onSurface,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = if (planet.isDestroyed) "Status: Destroyed" else "Status: Active",
-                        style = AppTypography.bodySmall,
-                        color = if (planet.isDestroyed) colors.error else colors.primary
-                    )
-                    Text(
-                        text = planet.description,
-                        style = AppTypography.bodySmall,
-                        color = colors.onSurface.copy(alpha = 0.7f)
-                    )
-                }
+                Text(
+                    text = if (planet.isDestroyed) "Status: Destroyed" else "Status: Active",
+                    style = AppTypography.bodySmall,
+                    color = if (planet.isDestroyed) colors.error else colors.primary
+                )
+                Text(
+                    text = planet.description,
+                    style = AppTypography.bodySmall,
+                    color = colors.onSurface.copy(alpha = 0.7f)
+                )
             }
         }
     }

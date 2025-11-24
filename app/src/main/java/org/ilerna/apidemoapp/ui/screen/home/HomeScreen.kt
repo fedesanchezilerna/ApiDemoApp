@@ -1,6 +1,5 @@
 package org.ilerna.apidemoapp.ui.screen.home
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,12 +15,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -34,7 +29,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import org.ilerna.apidemoapp.R
 import org.ilerna.apidemoapp.domain.model.DBCharacter
-import org.ilerna.apidemoapp.ui.theme.AppTypography
+import org.ilerna.apidemoapp.ui.components.InfoCard
+import org.ilerna.apidemoapp.ui.components.InfoRow
 
 /**
  * HomeScreen - Pantalla principal que muestra la lista de personajes de Dragon Ball
@@ -55,7 +51,7 @@ fun HomeScreen(
 ) {
     val charactersResponse by viewModel.characters.observeAsState()
 
-    // Load characters when show the screen
+    // Cargar personajes al mostrar la pantalla
     viewModel.getCharacters()
 
     Column(
@@ -63,10 +59,10 @@ fun HomeScreen(
             .fillMaxSize()
             .then(modifier)
     ) {
-        // Header fixed
+        // Header fijo con logo de Dragon Ball
         DragonBallHeader()
 
-        // Scrollable character list
+        // Lista scrolleable de personajes
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -85,9 +81,9 @@ fun HomeScreen(
 }
 
 /**
- * DragonBallHeader - Fixed header with the Dragon Ball logo
+ * DragonBallHeader - Header fijo con el logo de Dragon Ball
  *
- * This header remains visible even when scrolling through the list
+ * Este header permanece visible incluso cuando se hace scroll en la lista
  */
 @Composable
 fun DragonBallHeader(modifier: Modifier = Modifier) {
@@ -99,29 +95,28 @@ fun DragonBallHeader(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Dragon Ball logo
+        // Logo de Dragon Ball
         Image(
             painter = painterResource(id = R.drawable.dragon_ball_header),
-            contentDescription = "Dragon Ball Logo",
+            contentDescription = "Logo Dragon Ball",
             modifier = Modifier
                 .height(60.dp)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 8.dp)
         )
     }
 
-    // Orange divider (secondary Dragon Ball color)
     HorizontalDivider(
-        thickness = 10.dp,
-        color = colors.primaryContainer
+        thickness = 4.dp,
+        color = colors.primary
     )
 }
 
 /**
- * CharacterCard - Individual card for each character in the list
+ * CharacterCard - Card individual para cada personaje en la lista
  *
- * @param character Dragon Ball character to display
+ * @param character Personaje de Dragon Ball a mostrar
  * @param onClick Callback when card is clicked
- * @param modifier Optional modifier
+ * @param modifier Modificador opcional
  */
 @Composable
 fun CharacterCard(
@@ -129,23 +124,14 @@ fun CharacterCard(
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    val colors = MaterialTheme.colorScheme
-
-    Card(
-        border = BorderStroke(2.dp, colors.primary),
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = colors.primaryContainer
-        ),
-        modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable { onClick() }
+    InfoCard(
+        title = character.name,
+        modifier = modifier.clickable { onClick() }
     ) {
         Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Character Image
             AsyncImage(
@@ -157,35 +143,14 @@ fun CharacterCard(
                     .clip(CircleShape)
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
-
             // Character Information
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                // Character Name
-                Text(
-                    text = character.name,
-                    style = AppTypography.titleLarge,
-                    color = colors.onPrimaryContainer,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                // Character Race
-                Text(
-                    text = "Race: ${character.race}",
-                    style = AppTypography.bodyMedium,
-                    color = colors.onPrimaryContainer.copy(alpha = 0.8f),
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                // Power Level (Ki)
-                Text(
-                    text = "Ki: ${character.ki}",
-                    style = AppTypography.bodySmall,
-                    color = colors.onPrimaryContainer,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                InfoRow(label = "Race", value = character.race)
+                InfoRow(label = "Gender", value = character.gender)
+                InfoRow(label = "Ki", value = character.ki)
             }
         }
     }

@@ -73,5 +73,5 @@ dependencies {
     // Material Icons Extended
     implementation(libs.androidx.compose.material.icons.extended)
     // Coil for image loading
-    implementation(libs.coil.compose)
+    implementation("io.coil-kt:coil-compose:2.5.0")
 }
