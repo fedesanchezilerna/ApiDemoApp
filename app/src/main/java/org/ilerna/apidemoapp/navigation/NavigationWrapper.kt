@@ -6,6 +6,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
+import org.ilerna.apidemoapp.ui.screen.details.DetailsScreen
+import org.ilerna.apidemoapp.ui.screen.details.DetailsViewModel
 import org.ilerna.apidemoapp.ui.screen.favorites.FavoritesScreen
 import org.ilerna.apidemoapp.ui.screen.home.HomeScreen
 import org.ilerna.apidemoapp.ui.screen.home.HomeViewModel
@@ -29,7 +32,12 @@ fun NavigationWrapper(
     ) {
         composable<Destinations.Home> {
             val viewModel: HomeViewModel = viewModel()
-            HomeScreen(viewModel = viewModel)
+            HomeScreen(
+                viewModel = viewModel,
+                onCharacterClick = { characterId ->
+                    navController.navigate(Destinations.Details(characterId))
+                }
+            )
         }
 
         composable<Destinations.Favorites> {
@@ -38,6 +46,15 @@ fun NavigationWrapper(
 
         composable<Destinations.Settings> {
             SettingsScreen()
+        }
+
+        composable<Destinations.Details> { backStackEntry ->
+            val details = backStackEntry.toRoute<Destinations.Details>()
+            val viewModel: DetailsViewModel = viewModel()
+            DetailsScreen(
+                characterId = details.characterId,
+                viewModel = viewModel
+            )
         }
     }
 }

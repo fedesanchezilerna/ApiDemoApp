@@ -14,4 +14,7 @@ sealed class Destinations {
 
     @Serializable
     object Settings : Destinations()
+
+    @Serializable
+    data class Details(val characterId: Int) : Destinations()
 }

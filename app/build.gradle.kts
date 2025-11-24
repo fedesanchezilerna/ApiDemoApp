@@ -72,4 +72,6 @@ dependencies {
     implementation(libs.logging.interceptor)
     // Material Icons Extended
     implementation(libs.androidx.compose.material.icons.extended)
+    // Coil for image loading
+    implementation(libs.coil.compose)
 }

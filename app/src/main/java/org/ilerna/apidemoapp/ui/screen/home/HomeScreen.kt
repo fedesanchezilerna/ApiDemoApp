@@ -2,14 +2,20 @@ package org.ilerna.apidemoapp.ui.screen.home
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -21,8 +27,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import org.ilerna.apidemoapp.R
 import org.ilerna.apidemoapp.domain.model.DBCharacter
 import org.ilerna.apidemoapp.ui.theme.AppTypography
@@ -33,15 +42,20 @@ import org.ilerna.apidemoapp.ui.theme.AppTypography
  * Componentes:
  * - Header fijo con logo de Dragon Ball
  * - Lista scrolleable de personajes
+ *
+ * @param viewModel ViewModel for managing character data
+ * @param onCharacterClick Callback when a character is clicked
+ * @param modifier Optional modifier
  */
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
+    onCharacterClick: (Int) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val charactersResponse by viewModel.characters.observeAsState()
 
-    // Cargar personajes al mostrar la pantalla
+    // Load characters when show the screen
     viewModel.getCharacters()
 
     Column(
@@ -49,10 +63,10 @@ fun HomeScreen(
             .fillMaxSize()
             .then(modifier)
     ) {
-        // Header fijo con logo de Dragon Ball
+        // Header fixed
         DragonBallHeader()
 
-        // Lista scrolleable de personajes
+        // Scrollable character list
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -60,7 +74,10 @@ fun HomeScreen(
         ) {
             charactersResponse?.items?.let { charactersList ->
                 items(charactersList) { character ->
-                    CharacterCard(character = character)
+                    CharacterCard(
+                        character = character,
+                        onClick = { onCharacterClick(character.id) }
+                    )
                 }
             }
         }
@@ -68,9 +85,9 @@ fun HomeScreen(
 }
 
 /**
- * DragonBallHeader - Header fijo con el logo de Dragon Ball
+ * DragonBallHeader - Fixed header with the Dragon Ball logo
  *
- * Este header permanece visible incluso cuando se hace scroll en la lista
+ * This header remains visible even when scrolling through the list
  */
 @Composable
 fun DragonBallHeader(modifier: Modifier = Modifier) {
@@ -82,17 +99,17 @@ fun DragonBallHeader(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Logo de Dragon Ball
+        // Dragon Ball logo
         Image(
             painter = painterResource(id = R.drawable.dragon_ball_header),
-            contentDescription = "Logo Dragon Ball",
+            contentDescription = "Dragon Ball Logo",
             modifier = Modifier
                 .height(60.dp)
                 .padding(horizontal = 16.dp)
         )
     }
 
-    // Divisor naranja (color secundario de Dragon Ball)
+    // Orange divider (secondary Dragon Ball color)
     HorizontalDivider(
         thickness = 10.dp,
         color = colors.primaryContainer
@@ -100,14 +117,16 @@ fun DragonBallHeader(modifier: Modifier = Modifier) {
 }
 
 /**
- * CharacterCard - Card individual para cada personaje en la lista
+ * CharacterCard - Individual card for each character in the list
  *
- * @param character Personaje de Dragon Ball a mostrar
- * @param modifier Modificador opcional
+ * @param character Dragon Ball character to display
+ * @param onClick Callback when card is clicked
+ * @param modifier Optional modifier
  */
 @Composable
 fun CharacterCard(
     character: DBCharacter,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val colors = MaterialTheme.colorScheme
@@ -118,36 +137,56 @@ fun CharacterCard(
         colors = CardDefaults.cardColors(
             containerColor = colors.primaryContainer
         ),
-        modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+        modifier = modifier
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable { onClick() }
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // Nombre del personaje
-            Text(
-                text = character.name,
-                style = AppTypography.titleLarge,
-                color = colors.onPrimaryContainer,
-                modifier = Modifier.fillMaxWidth()
+            // Character Image
+            AsyncImage(
+                model = character.image,
+                contentDescription = character.name,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(CircleShape)
             )
 
-            // Raza del personaje
-            Text(
-                text = "Raza: ${character.race}",
-                style = AppTypography.bodyMedium,
-                color = colors.onPrimaryContainer.copy(alpha = 0.8f),
-                modifier = Modifier.fillMaxWidth()
-            )
+            Spacer(modifier = Modifier.width(16.dp))
 
-            // Nivel de poder (Ki)
-            Text(
-                text = "Ki: ${character.ki}",
-                style = AppTypography.bodySmall,
-                color = colors.onPrimaryContainer,
-                modifier = Modifier.fillMaxWidth()
-            )
+            // Character Information
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                // Character Name
+                Text(
+                    text = character.name,
+                    style = AppTypography.titleLarge,
+                    color = colors.onPrimaryContainer,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                // Character Race
+                Text(
+                    text = "Race: ${character.race}",
+                    style = AppTypography.bodyMedium,
+                    color = colors.onPrimaryContainer.copy(alpha = 0.8f),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                // Power Level (Ki)
+                Text(
+                    text = "Ki: ${character.ki}",
+                    style = AppTypography.bodySmall,
+                    color = colors.onPrimaryContainer,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }
