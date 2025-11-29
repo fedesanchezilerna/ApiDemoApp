@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,7 +41,7 @@ fun BottomNavigationBar(
     
     val items = listOf(
         NavigationItem("Home", Icons.Default.Home, Destinations.Home, 0),
-        NavigationItem("Favorites", Icons.Default.Favorite, Destinations.Favorites, 1),
+        NavigationItem("Favorites", Icons.Default.Star, Destinations.Favorites, 1),
         NavigationItem("Settings", Icons.Default.Settings, Destinations.Settings, 2)
     )
 

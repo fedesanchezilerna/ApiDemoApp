@@ -2,6 +2,7 @@ package org.ilerna.apidemoapp.ui.screen.details
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,12 +32,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import org.ilerna.apidemoapp.domain.model.DBCharacter
 import org.ilerna.apidemoapp.domain.model.Planet
@@ -108,6 +115,7 @@ fun CharacterDetailsContent(
     modifier: Modifier = Modifier
 ) {
     val colors = MaterialTheme.colorScheme
+    var selectedTransformation by remember { mutableStateOf<Transformation?>(null) }
 
     Box(modifier = modifier.fillMaxSize()) {
         LazyColumn(
@@ -198,7 +206,10 @@ fun CharacterDetailsContent(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
                     items(character.transformations) { transformation ->
-                        TransformationCard(transformation = transformation)
+                        TransformationCard(
+                            transformation = transformation,
+                            onClick = { selectedTransformation = transformation }
+                        )
                     }
                 }
             }
@@ -224,6 +235,14 @@ fun CharacterDetailsContent(
                 modifier = Modifier.size(32.dp)
             )
         }
+    }
+
+    // Image viewer dialog
+    selectedTransformation?.let { transformation ->
+        TransformationImageDialog(
+            transformation = transformation,
+            onDismiss = { selectedTransformation = null }
+        )
     }
 }
 
@@ -287,6 +306,7 @@ fun PlanetCard(
 @Composable
 fun TransformationCard(
     transformation: Transformation,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val colors = MaterialTheme.colorScheme
@@ -297,7 +317,9 @@ fun TransformationCard(
         colors = CardDefaults.cardColors(
             containerColor = colors.surface
         ),
-        modifier = modifier.width(150.dp)
+        modifier = modifier
+            .width(150.dp)
+            .clickable { onClick() }
     ) {
         Column(
             modifier = Modifier.padding(12.dp),
@@ -330,6 +352,49 @@ fun TransformationCard(
                 style = AppTypography.bodySmall,
                 color = colors.onSurface.copy(alpha = 0.7f)
             )
+        }
+    }
+}
+
+/**
+ * TransformationImageDialog - Full screen dialog displaying transformation image
+ */
+@Composable
+fun TransformationImageDialog(
+    transformation: Transformation,
+    onDismiss: () -> Unit
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                //.background(Color.Black.copy(alpha = 0.9f))
+                .clickable { onDismiss() },
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.padding(32.dp)
+            ) {
+                // Large transformation image
+                AsyncImage(
+                    model = transformation.image,
+                    contentDescription = transformation.name,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(400.dp)
+                )
+
+                // Transformation name
+                Text(
+                    text = transformation.name,
+                    style = AppTypography.headlineMedium,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }

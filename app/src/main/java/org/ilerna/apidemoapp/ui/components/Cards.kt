@@ -53,7 +53,6 @@ fun InfoCard(
                 style = AppTypography.titleMedium,
                 color = colors.primary,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 8.dp)
             )
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 8.dp),
