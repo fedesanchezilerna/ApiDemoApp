@@ -18,9 +18,13 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,12 +50,14 @@ import org.ilerna.apidemoapp.ui.theme.AppTypography
  *
  * @param characterId ID of the character to display
  * @param viewModel ViewModel for fetching character details
+ * @param onBackClick Callback when back button is clicked
  * @param modifier Optional modifier
  */
 @Composable
 fun DetailsScreen(
     characterId: Int,
     viewModel: DetailsViewModel,
+    onBackClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val character by viewModel.character.observeAsState()
@@ -83,7 +89,10 @@ fun DetailsScreen(
             }
 
             character != null -> {
-                CharacterDetailsContent(character = character!!)
+                CharacterDetailsContent(
+                    character = character!!,
+                    onBackClick = onBackClick
+                )
             }
         }
     }
@@ -95,15 +104,17 @@ fun DetailsScreen(
 @Composable
 fun CharacterDetailsContent(
     character: DBCharacter,
+    onBackClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val colors = MaterialTheme.colorScheme
 
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .background(colors.background)
-    ) {
+    Box(modifier = modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(colors.background)
+        ) {
         // Character Image Header
         item {
             Box(
@@ -193,9 +204,25 @@ fun CharacterDetailsContent(
             }
         }
 
-        // Bottom spacer
-        item {
-            Spacer(modifier = Modifier.height(16.dp))
+            // Bottom spacer
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+
+        // Back button in top-right corner
+        IconButton(
+            onClick = onBackClick,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back",
+                tint = colors.primary,
+                modifier = Modifier.size(32.dp)
+            )
         }
     }
 }

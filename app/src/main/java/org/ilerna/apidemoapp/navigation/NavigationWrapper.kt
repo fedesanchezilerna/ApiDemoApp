@@ -53,7 +53,10 @@ fun NavigationWrapper(
             val viewModel: DetailsViewModel = viewModel()
             DetailsScreen(
                 characterId = details.characterId,
-                viewModel = viewModel
+                viewModel = viewModel,
+                onBackClick = {
+                    navController.popBackStack()
+                }
             )
         }
     }

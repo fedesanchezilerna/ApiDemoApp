@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -50,6 +51,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
     val charactersResponse by viewModel.characters.observeAsState()
+    val listState = rememberLazyListState()
 
     // Cargar personajes al mostrar la pantalla
     viewModel.getCharacters()
@@ -64,6 +66,7 @@ fun HomeScreen(
 
         // Lista scrolleable de personajes
         LazyColumn(
+            state = listState,
             modifier = Modifier
                 .fillMaxSize()
                 .weight(1f)
@@ -137,10 +140,8 @@ fun CharacterCard(
             AsyncImage(
                 model = character.image,
                 contentDescription = character.name,
-                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(80.dp)
-                    .clip(CircleShape)
+                    .size(90.dp)
             )
 
             // Character Information
