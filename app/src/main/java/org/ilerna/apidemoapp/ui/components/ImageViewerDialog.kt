@@ -53,7 +53,7 @@ fun ImageViewerDialog(
                     contentScale = ContentScale.Fit,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(400.dp)
+                        .height(600.dp)
                 )
 
                 // Title

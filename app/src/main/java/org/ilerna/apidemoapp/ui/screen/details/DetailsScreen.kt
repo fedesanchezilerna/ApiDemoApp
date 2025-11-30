@@ -383,5 +383,3 @@ fun TransformationCard(
         }
     }
 }
-
-
