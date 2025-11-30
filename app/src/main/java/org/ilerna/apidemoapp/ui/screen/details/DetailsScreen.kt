@@ -48,6 +48,7 @@ import coil.compose.AsyncImage
 import org.ilerna.apidemoapp.domain.model.DBCharacter
 import org.ilerna.apidemoapp.domain.model.Planet
 import org.ilerna.apidemoapp.domain.model.Transformation
+import org.ilerna.apidemoapp.ui.components.ImageViewerDialog
 import org.ilerna.apidemoapp.ui.components.InfoCard
 import org.ilerna.apidemoapp.ui.components.InfoRow
 import org.ilerna.apidemoapp.ui.theme.AppTypography
@@ -117,6 +118,7 @@ fun CharacterDetailsContent(
     val colors = MaterialTheme.colorScheme
     var selectedTransformation by remember { mutableStateOf<Transformation?>(null) }
     var showCharacterImage by remember { mutableStateOf(false) }
+    var showPlanetImage by remember { mutableStateOf(false) }
 
     Box(modifier = modifier.fillMaxSize()) {
         LazyColumn(
@@ -184,7 +186,10 @@ fun CharacterDetailsContent(
         // Origin Planet Card (if available)
         character.originPlanet?.let { planet ->
             item {
-                PlanetCard(planet = planet)
+                PlanetCard(
+                    planet = planet,
+                    onImageClick = { showPlanetImage = true }
+                )
             }
         }
 
@@ -239,20 +244,31 @@ fun CharacterDetailsContent(
         }
     }
 
-    // Transformation image viewer dialog
+    // Image viewer dialogs
+    if (showCharacterImage) {
+        ImageViewerDialog(
+            imageUrl = character.image,
+            title = character.name,
+            onDismiss = { showCharacterImage = false }
+        )
+    }
+
     selectedTransformation?.let { transformation ->
-        TransformationImageDialog(
-            transformation = transformation,
+        ImageViewerDialog(
+            imageUrl = transformation.image,
+            title = transformation.name,
             onDismiss = { selectedTransformation = null }
         )
     }
 
-    // Character image viewer dialog
-    if (showCharacterImage) {
-        CharacterImageDialog(
-            character = character,
-            onDismiss = { showCharacterImage = false }
-        )
+    character.originPlanet?.let { planet ->
+        if (showPlanetImage) {
+            ImageViewerDialog(
+                imageUrl = planet.image,
+                title = planet.name,
+                onDismiss = { showPlanetImage = false }
+            )
+        }
     }
 }
 
@@ -262,6 +278,7 @@ fun CharacterDetailsContent(
 @Composable
 fun PlanetCard(
     planet: Planet,
+    onImageClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val colors = MaterialTheme.colorScheme
@@ -282,6 +299,7 @@ fun PlanetCard(
                 modifier = Modifier
                     .size(80.dp)
                     .clip(CircleShape)
+                    .clickable { onImageClick() }
             )
 
             // Planet Info
@@ -366,86 +384,4 @@ fun TransformationCard(
     }
 }
 
-/**
- * CharacterImageDialog - Full screen dialog displaying character image
- */
-@Composable
-fun CharacterImageDialog(
-    character: DBCharacter,
-    onDismiss: () -> Unit
-) {
-    Dialog(onDismissRequest = onDismiss) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable { onDismiss() },
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.padding(32.dp)
-            ) {
-                // Large character image
-                AsyncImage(
-                    model = character.image,
-                    contentDescription = character.name,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(400.dp)
-                )
 
-                // Character name
-                Text(
-                    text = character.name,
-                    style = AppTypography.headlineMedium,
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
-    }
-}
-
-/**
- * TransformationImageDialog - Full screen dialog displaying transformation image
- */
-@Composable
-fun TransformationImageDialog(
-    transformation: Transformation,
-    onDismiss: () -> Unit
-) {
-    Dialog(onDismissRequest = onDismiss) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable { onDismiss() },
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.padding(32.dp)
-            ) {
-                // Large transformation image
-                AsyncImage(
-                    model = transformation.image,
-                    contentDescription = transformation.name,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(400.dp)
-                )
-
-                // Transformation name
-                Text(
-                    text = transformation.name,
-                    style = AppTypography.headlineMedium,
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
-    }
-}
