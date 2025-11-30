@@ -116,6 +116,7 @@ fun CharacterDetailsContent(
 ) {
     val colors = MaterialTheme.colorScheme
     var selectedTransformation by remember { mutableStateOf<Transformation?>(null) }
+    var showCharacterImage by remember { mutableStateOf(false) }
 
     Box(modifier = modifier.fillMaxSize()) {
         LazyColumn(
@@ -129,7 +130,8 @@ fun CharacterDetailsContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(300.dp)
-                    .background(colors.primaryContainer),
+                    .background(colors.primaryContainer)
+                    .clickable { showCharacterImage = true },
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(
@@ -237,11 +239,19 @@ fun CharacterDetailsContent(
         }
     }
 
-    // Image viewer dialog
+    // Transformation image viewer dialog
     selectedTransformation?.let { transformation ->
         TransformationImageDialog(
             transformation = transformation,
             onDismiss = { selectedTransformation = null }
+        )
+    }
+
+    // Character image viewer dialog
+    if (showCharacterImage) {
+        CharacterImageDialog(
+            character = character,
+            onDismiss = { showCharacterImage = false }
         )
     }
 }
@@ -357,6 +367,48 @@ fun TransformationCard(
 }
 
 /**
+ * CharacterImageDialog - Full screen dialog displaying character image
+ */
+@Composable
+fun CharacterImageDialog(
+    character: DBCharacter,
+    onDismiss: () -> Unit
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable { onDismiss() },
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.padding(32.dp)
+            ) {
+                // Large character image
+                AsyncImage(
+                    model = character.image,
+                    contentDescription = character.name,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(400.dp)
+                )
+
+                // Character name
+                Text(
+                    text = character.name,
+                    style = AppTypography.headlineMedium,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    }
+}
+
+/**
  * TransformationImageDialog - Full screen dialog displaying transformation image
  */
 @Composable
@@ -368,7 +420,6 @@ fun TransformationImageDialog(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                //.background(Color.Black.copy(alpha = 0.9f))
                 .clickable { onDismiss() },
             contentAlignment = Alignment.Center
         ) {
