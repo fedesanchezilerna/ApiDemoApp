@@ -24,6 +24,9 @@ class DetailsViewModel : ViewModel() {
     private val _error = MutableLiveData<String?>()
     val error = _error
 
+    private val _isFavorite = MutableLiveData<Boolean>()
+    val isFavorite = _isFavorite
+
     /**
      * Fetch character details by ID
      */
@@ -39,6 +42,8 @@ class DetailsViewModel : ViewModel() {
                     if (response.isSuccessful) {
                         _character.value = response.body()
                         Log.d("DetailsViewModel", "Character loaded: ${response.body()?.name}")
+                        // Check if character is favorite
+                        checkIsFavorite(characterId)
                     } else {
                         _error.value = "Error: ${response.message()}"
                         Log.e("DetailsViewModel", "Error: ${response.message()}")
@@ -49,6 +54,52 @@ class DetailsViewModel : ViewModel() {
                     _isLoading.value = false
                     _error.value = "Exception: ${e.message}"
                     Log.e("DetailsViewModel", "Exception: ${e.message}")
+                }
+            }
+        }
+    }
+
+    /**
+     * Check if character is in favorites
+     */
+    private fun checkIsFavorite(characterId: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val isFav = repository.isFavorite(characterId)
+                withContext(Dispatchers.Main) {
+                    _isFavorite.value = isFav
+                }
+            } catch (e: Exception) {
+                Log.e("DetailsViewModel", "Error checking favorite: ${e.message}")
+            }
+        }
+    }
+
+    /**
+     * Toggle favorite status
+     */
+    fun toggleFavorite() {
+        val char = _character.value ?: return
+        val currentFavoriteStatus = _isFavorite.value ?: false
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                if (currentFavoriteStatus) {
+                    // Remove from favorites
+                    repository.deleteFavorite(char.id)
+                    Log.d("DetailsViewModel", "Character removed from favorites: ${char.name}")
+                } else {
+                    // Add to favorites
+                    repository.saveAsFavorite(char)
+                    Log.d("DetailsViewModel", "Character added to favorites: ${char.name}")
+                }
+                withContext(Dispatchers.Main) {
+                    _isFavorite.value = !currentFavoriteStatus
+                }
+            } catch (e: Exception) {
+                Log.e("DetailsViewModel", "Error toggling favorite: ${e.message}")
+                withContext(Dispatchers.Main) {
+                    _error.value = "Error updating favorites: ${e.message}"
                 }
             }
         }

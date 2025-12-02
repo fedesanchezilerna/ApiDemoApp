@@ -21,6 +21,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -71,6 +73,7 @@ fun DetailsScreen(
     val character by viewModel.character.observeAsState()
     val isLoading by viewModel.isLoading.observeAsState(false)
     val error by viewModel.error.observeAsState()
+    val isFavorite by viewModel.isFavorite.observeAsState(false)
 
     // Fetch character details when screen is displayed
     LaunchedEffect(characterId) {
@@ -99,6 +102,8 @@ fun DetailsScreen(
             character != null -> {
                 CharacterDetailsContent(
                     character = character!!,
+                    isFavorite = isFavorite,
+                    onFavoriteClick = { viewModel.toggleFavorite() },
                     onBackClick = onBackClick
                 )
             }
@@ -112,6 +117,8 @@ fun DetailsScreen(
 @Composable
 fun CharacterDetailsContent(
     character: DBCharacter,
+    isFavorite: Boolean,
+    onFavoriteClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -144,6 +151,21 @@ fun CharacterDetailsContent(
                         .fillMaxSize()
                         .padding(16.dp)
                 )
+                
+                // Star icon in top-left corner
+                IconButton(
+                    onClick = onFavoriteClick,
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(16.dp)
+                ) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Filled.Star else Icons.Outlined.StarBorder,
+                        contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
+                        tint = colors.primary,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
             }
         }
 
@@ -228,7 +250,7 @@ fun CharacterDetailsContent(
             }
         }
 
-        // Back button in top-right corner
+        // Back button in top-right corner (fixed position)
         IconButton(
             onClick = onBackClick,
             modifier = Modifier
