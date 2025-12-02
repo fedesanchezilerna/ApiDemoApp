@@ -1,4 +1,4 @@
-package org.ilerna.apidemoapp.navigation
+package org.ilerna.apidemoapp.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,16 +13,21 @@ import org.ilerna.apidemoapp.ui.screen.favorites.FavoritesScreen
 import org.ilerna.apidemoapp.ui.screen.home.HomeScreen
 import org.ilerna.apidemoapp.ui.screen.home.HomeViewModel
 import org.ilerna.apidemoapp.ui.screen.settings.SettingsScreen
+import org.ilerna.apidemoapp.ui.screen.settings.SettingsViewModel
 
 /**
  * NavigationWrapper - Centralized navigation configuration using NavHost
  *
  * @param navController Navigation controller passed from parent composable
+ * @param settingsViewModel Shared ViewModel for settings
+ * @param onDarkModeChanged Callback when dark mode is toggled
  * @param modifier Optional modifier
  */
 @Composable
 fun NavigationWrapper(
     navController: NavHostController,
+    settingsViewModel: SettingsViewModel,
+    onDarkModeChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     NavHost(
@@ -45,7 +50,10 @@ fun NavigationWrapper(
         }
 
         composable<Destinations.Settings> {
-            SettingsScreen()
+            SettingsScreen(
+                viewModel = settingsViewModel,
+                onDarkModeChanged = onDarkModeChanged
+            )
         }
 
         composable<Destinations.Details> { backStackEntry ->

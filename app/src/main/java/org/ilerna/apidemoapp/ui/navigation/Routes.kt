@@ -1,4 +1,4 @@
-package org.ilerna.apidemoapp.navigation
+package org.ilerna.apidemoapp.ui.navigation
 
 import kotlinx.serialization.Serializable
 

@@ -1,4 +1,4 @@
-package org.ilerna.apidemoapp.navigation
+package org.ilerna.apidemoapp.ui.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

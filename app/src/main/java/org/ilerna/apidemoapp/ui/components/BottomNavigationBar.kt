@@ -3,7 +3,6 @@ package org.ilerna.apidemoapp.ui.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
@@ -18,8 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import org.ilerna.apidemoapp.navigation.Destinations
-import org.ilerna.apidemoapp.navigation.NavigationItem
+import org.ilerna.apidemoapp.ui.navigation.Destinations
+import org.ilerna.apidemoapp.ui.navigation.NavigationItem
 
 /**
  * Displays a navigation bar with three items (Home, Favorites, Settings)

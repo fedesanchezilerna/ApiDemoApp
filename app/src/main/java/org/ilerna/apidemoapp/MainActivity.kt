@@ -8,14 +8,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
-import org.ilerna.apidemoapp.navigation.NavigationWrapper
+import org.ilerna.apidemoapp.ui.navigation.NavigationWrapper
 import org.ilerna.apidemoapp.ui.components.BottomNavigationBar
+import org.ilerna.apidemoapp.ui.screen.settings.SettingsViewModel
 import org.ilerna.apidemoapp.ui.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,9 +26,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            AppTheme {
-                MyApp()
-            }
+            MyApp()
         }
     }
 }
@@ -37,23 +38,31 @@ class MainActivity : ComponentActivity() {
 fun MyApp() {
     var selectedItem: Int by remember { mutableIntStateOf(0) }
     val navController = rememberNavController()
+    val settingsViewModel: SettingsViewModel = viewModel()
+    val isDarkMode by settingsViewModel.isDarkMode.collectAsState()
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        bottomBar = {
-            BottomNavigationBar(
-                selectedItem = selectedItem,
-                onItemSelected = { index, destination ->
-                    selectedItem = index
-                    navController.navigate(destination)
+    AppTheme(darkTheme = isDarkMode) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            bottomBar = {
+                BottomNavigationBar(
+                    selectedItem = selectedItem,
+                    onItemSelected = { index, destination ->
+                        selectedItem = index
+                        navController.navigate(destination)
+                    },
+                    navController = navController
+                )
+            }
+        ) { innerPadding ->
+            NavigationWrapper(
+                navController = navController,
+                settingsViewModel = settingsViewModel,
+                onDarkModeChanged = { enabled ->
+                    settingsViewModel.setDarkMode(enabled)
                 },
-                navController = navController
+                modifier = Modifier.padding(innerPadding)
             )
         }
-    ) { innerPadding ->
-        NavigationWrapper(
-            navController = navController,
-            modifier = Modifier.padding(innerPadding)
-        )
     }
 }
