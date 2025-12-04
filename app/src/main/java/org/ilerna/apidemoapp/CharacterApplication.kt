@@ -2,7 +2,7 @@ package org.ilerna.apidemoapp
 
 import android.app.Application
 import androidx.room.Room
-import org.ilerna.apidemoapp.data.local.CharacterDatabase
+import org.ilerna.apidemoapp.data.local.database.CharacterDatabase
 
 /**
  * CharacterApplication - Application class for managing database singleton

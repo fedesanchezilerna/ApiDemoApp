@@ -1,4 +1,4 @@
-package org.ilerna.apidemoapp.data.local
+package org.ilerna.apidemoapp.data.local.database
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
