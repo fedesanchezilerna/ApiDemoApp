@@ -34,11 +34,11 @@ import org.ilerna.apidemoapp.ui.components.InfoCard
 import org.ilerna.apidemoapp.ui.components.InfoRow
 
 /**
- * HomeScreen - Pantalla principal que muestra la lista de personajes de Dragon Ball
+ * HomeScreen - Main screen that shows the DB Character list
  *
- * Componentes:
- * - Header fijo con logo de Dragon Ball
- * - Lista scrolleable de personajes
+ * Components:
+ * - Fixed header with DB logo
+ * - Scrollable character list
  *
  * @param viewModel ViewModel for managing character data
  * @param onCharacterClick Callback when a character is clicked
@@ -53,7 +53,7 @@ fun HomeScreen(
     val charactersResponse by viewModel.characters.observeAsState()
     val listState = rememberLazyListState()
 
-    // Cargar personajes al mostrar la pantalla
+    // Load characters when the screen is displayed
     viewModel.getCharacters()
 
     Column(
@@ -61,10 +61,10 @@ fun HomeScreen(
             .fillMaxSize()
             .then(modifier)
     ) {
-        // Header fijo con logo de Dragon Ball
+        // Fixed header with Dragon Ball logo
         DragonBallHeader()
 
-        // Lista scrolleable de personajes
+        // Scrollable character list
         LazyColumn(
             state = listState,
             modifier = Modifier
@@ -84,9 +84,9 @@ fun HomeScreen(
 }
 
 /**
- * DragonBallHeader - Header fijo con el logo de Dragon Ball
+ * DragonBallHeader -  Fixed header with Dragon Ball logo
  *
- * Este header permanece visible incluso cuando se hace scroll en la lista
+ * This header remains visible even when scrolling the list
  */
 @Composable
 fun DragonBallHeader(modifier: Modifier = Modifier) {
@@ -98,10 +98,10 @@ fun DragonBallHeader(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Logo de Dragon Ball
+        // Dragon Ball logo
         Image(
             painter = painterResource(id = R.drawable.dragon_ball_header),
-            contentDescription = "Logo Dragon Ball",
+            contentDescription = "Dragon Ball logo",
             modifier = Modifier
                 .height(60.dp)
                 .padding(horizontal = 8.dp)
@@ -115,11 +115,11 @@ fun DragonBallHeader(modifier: Modifier = Modifier) {
 }
 
 /**
- * CharacterCard - Card individual para cada personaje en la lista
+ * CharacterCard - Individual card for each character in the list
  *
- * @param character Personaje de Dragon Ball a mostrar
+ * @param character Dragon Ball character to display
  * @param onClick Callback when card is clicked
- * @param modifier Modificador opcional
+ * @param modifier Optional modifier
  */
 @Composable
 fun CharacterCard(

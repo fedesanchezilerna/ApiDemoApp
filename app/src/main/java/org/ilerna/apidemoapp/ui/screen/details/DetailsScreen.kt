@@ -162,7 +162,7 @@ fun CharacterDetailsContent(
                     Icon(
                         imageVector = if (isFavorite) Icons.Filled.Star else Icons.Outlined.StarBorder,
                         contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
-                        tint = colors.primary,
+                        tint = colors.errorContainer,
                         modifier = Modifier.size(32.dp)
                     )
                 }
