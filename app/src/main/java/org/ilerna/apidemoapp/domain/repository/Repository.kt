@@ -50,4 +50,7 @@ class Repository {
 
     suspend fun getFavorites() =
         daoInterface.getAllFavorites()
+
+    suspend fun deleteAllFavorites() =
+        daoInterface.deleteAllFavorites()
 }

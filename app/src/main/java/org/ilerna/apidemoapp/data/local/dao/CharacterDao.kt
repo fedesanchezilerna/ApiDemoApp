@@ -48,4 +48,10 @@ interface CharacterDao {
      */
     @Query("SELECT EXISTS(SELECT 1 FROM favorite_characters WHERE id = :characterId)")
     suspend fun isFavorite(characterId: Int): Boolean
+    
+    /**
+     * Delete all favorite characters
+     */
+    @Query("DELETE FROM favorite_characters")
+    suspend fun deleteAllFavorites()
 }

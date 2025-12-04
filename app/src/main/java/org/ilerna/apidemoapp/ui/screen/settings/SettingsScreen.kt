@@ -1,24 +1,17 @@
 package org.ilerna.apidemoapp.ui.screen.settings
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import org.ilerna.apidemoapp.ui.components.ConfirmationDialog
 import org.ilerna.apidemoapp.ui.theme.AppTypography
 
 /**
@@ -46,10 +40,7 @@ fun SettingsScreen(
 ) {
     val isDarkMode by viewModel.isDarkMode.collectAsState()
     val colors = MaterialTheme.colorScheme
-    
-    var selectedViewMode by remember { mutableStateOf("List") }
-    var dropdownExpanded by remember { mutableStateOf(false) }
-    val viewModeOptions = listOf("List", "Grid")
+    var showDeleteConfirmDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -82,7 +73,24 @@ fun SettingsScreen(
             title = "Delete all favorites",
             description = "Remove all favorite characters added",
             buttonText = "Delete",
-            onButtonClick = { /* TODO: Implement delete all favorites logic */ }
+            onButtonClick = { showDeleteConfirmDialog = true }
+        )
+    }
+    
+    // Delete Confirmation Dialog
+    if (showDeleteConfirmDialog) {
+        ConfirmationDialog(
+            title = "Delete all favorites?",
+            message = "This action will remove all favorite characters. This cannot be undone.",
+            confirmButtonText = "Delete",
+            dismissButtonText = "Cancel",
+            onConfirm = {
+                viewModel.deleteAllFavorites()
+                showDeleteConfirmDialog = false
+            },
+            onDismiss = {
+                showDeleteConfirmDialog = false
+            }
         )
     }
 }
@@ -145,13 +153,13 @@ fun SettingItemWithButton(
     description: String,
     buttonText: String,
     onButtonClick: () -> Unit,
-    buttonColors: androidx.compose.material3.ButtonColors = ButtonDefaults.buttonColors(
-        containerColor = MaterialTheme.colorScheme.errorContainer,
-        contentColor = MaterialTheme.colorScheme.onErrorContainer
-    ),
     modifier: Modifier = Modifier
 ) {
     val colors = MaterialTheme.colorScheme
+    val buttonColors = ButtonDefaults.buttonColors(
+        containerColor = colors.errorContainer,
+        contentColor = colors.onErrorContainer
+    )
 
     Row(
         modifier = modifier
