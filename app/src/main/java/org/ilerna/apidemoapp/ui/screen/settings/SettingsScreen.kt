@@ -1,18 +1,30 @@
 package org.ilerna.apidemoapp.ui.screen.settings
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -34,6 +46,10 @@ fun SettingsScreen(
 ) {
     val isDarkMode by viewModel.isDarkMode.collectAsState()
     val colors = MaterialTheme.colorScheme
+    
+    var selectedViewMode by remember { mutableStateOf("List") }
+    var dropdownExpanded by remember { mutableStateOf(false) }
+    val viewModeOptions = listOf("List", "Grid")
 
     Column(
         modifier = modifier
@@ -60,11 +76,19 @@ fun SettingsScreen(
                 onDarkModeChanged(enabled)
             }
         )
+
+        // Delete All Favorites Setting
+        SettingItemWithButton(
+            title = "Delete all favorites",
+            description = "Remove all favorite characters added",
+            buttonText = "Delete",
+            onButtonClick = { /* TODO: Implement delete all favorites logic */ }
+        )
     }
 }
 
 /**
- * SettingItem - Reusable component for a setting with toggle
+ * SettingItem - Reusable component for a setting with toggle switch
  */
 @Composable
 fun SettingItem(
@@ -109,5 +133,57 @@ fun SettingItem(
                 uncheckedTrackColor = colors.surfaceVariant
             )
         )
+    }
+}
+
+/**
+ * SettingItemWithButton - Reusable component for a setting with action button
+ */
+@Composable
+fun SettingItemWithButton(
+    title: String,
+    description: String,
+    buttonText: String,
+    onButtonClick: () -> Unit,
+    buttonColors: androidx.compose.material3.ButtonColors = ButtonDefaults.buttonColors(
+        containerColor = MaterialTheme.colorScheme.errorContainer,
+        contentColor = MaterialTheme.colorScheme.onErrorContainer
+    ),
+    modifier: Modifier = Modifier
+) {
+    val colors = MaterialTheme.colorScheme
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = title,
+                style = AppTypography.titleMedium,
+                color = colors.onSurface,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text(
+                text = description,
+                style = AppTypography.bodyMedium,
+                color = colors.onSurface.copy(alpha = 0.7f)
+            )
+        }
+
+        Button(
+            onClick = onButtonClick,
+            colors = buttonColors
+        ) {
+            Text(
+                text = buttonText,
+                style = AppTypography.bodyMedium
+            )
+        }
     }
 }
