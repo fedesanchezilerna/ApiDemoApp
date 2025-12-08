@@ -11,26 +11,19 @@ import org.ilerna.apidemoapp.CharacterApplication
 import org.ilerna.apidemoapp.domain.repository.Repository
 
 /**
- * SettingsViewModel - Manages settings state including dark mode preference
+ * SettingsViewModel - Manages settings state including theme preference
  */
 class SettingsViewModel : ViewModel() {
     private val repository = Repository()
     
-    private val _isDarkMode = MutableStateFlow(false)
-    val isDarkMode: StateFlow<Boolean> = _isDarkMode.asStateFlow()
+    private val _currentTheme = MutableStateFlow(ThemeMode.SYSTEM)
+    val currentTheme: StateFlow<ThemeMode> = _currentTheme.asStateFlow()
 
     /**
-     * Toggle dark mode on/off
+     * Set theme mode
      */
-    fun toggleDarkMode() {
-        _isDarkMode.value = !_isDarkMode.value
-    }
-
-    /**
-     * Set dark mode explicitly
-     */
-    fun setDarkMode(enabled: Boolean) {
-        _isDarkMode.value = enabled
+    fun setTheme(theme: ThemeMode) {
+        _currentTheme.value = theme
     }
     
     /**

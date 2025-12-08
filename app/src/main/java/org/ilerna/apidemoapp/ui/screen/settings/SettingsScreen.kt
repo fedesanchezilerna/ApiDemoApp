@@ -6,12 +6,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,16 +34,16 @@ import org.ilerna.apidemoapp.ui.theme.AppTypography
  * SettingsScreen - Screen to manage app settings
  * 
  * @param viewModel ViewModel for managing settings state
- * @param onDarkModeChanged Callback when dark mode is toggled
+ * @param onThemeChanged Callback when theme is changed
  * @param modifier Optional modifier
  */
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
-    onDarkModeChanged: (Boolean) -> Unit = {},
+    onThemeChanged: (ThemeMode) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    val isDarkMode by viewModel.isDarkMode.collectAsState()
+    val currentTheme by viewModel.currentTheme.collectAsState()
     val colors = MaterialTheme.colorScheme
     var showDeleteConfirmDialog by remember { mutableStateOf(false) }
 
@@ -57,14 +62,14 @@ fun SettingsScreen(
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        // Dark Mode Setting
-        SettingItem(
-            title = "Dark Mode",
-            description = "Enable dark theme for the app",
-            isEnabled = isDarkMode,
-            onToggle = { enabled ->
-                viewModel.setDarkMode(enabled)
-                onDarkModeChanged(enabled)
+        // Theme Setting
+        SettingItemWithDropdown(
+            title = "Theme",
+            description = "Select the theme for the app",
+            selectedOption = currentTheme,
+            onOptionSelected = { theme ->
+                viewModel.setTheme(theme)
+                onThemeChanged(theme)
             }
         )
 
@@ -96,17 +101,33 @@ fun SettingsScreen(
 }
 
 /**
- * SettingItem - Reusable component for a setting with toggle switch
+ * ThemeMode - Enum for theme selection
+ */
+enum class ThemeMode {
+    LIGHT,
+    DARK,
+    SYSTEM;
+
+    fun getDisplayName(): String = when (this) {
+        LIGHT -> "Light"
+        DARK -> "Dark"
+        SYSTEM -> "System Default"
+    }
+}
+
+/**
+ * SettingItemWithDropdown - Reusable component for a setting with dropdown selector
  */
 @Composable
-fun SettingItem(
+fun SettingItemWithDropdown(
     title: String,
     description: String,
-    isEnabled: Boolean,
-    onToggle: (Boolean) -> Unit,
+    selectedOption: ThemeMode,
+    onOptionSelected: (ThemeMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val colors = MaterialTheme.colorScheme
+    var expanded by remember { mutableStateOf(false) }
 
     Row(
         modifier = modifier
@@ -131,16 +152,42 @@ fun SettingItem(
             )
         }
 
-        Switch(
-            checked = isEnabled,
-            onCheckedChange = onToggle,
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = colors.primary,
-                checkedTrackColor = colors.primaryContainer,
-                uncheckedThumbColor = colors.outline,
-                uncheckedTrackColor = colors.surfaceVariant
+        // Dropdown Button
+        TextButton(
+            onClick = { expanded = true }
+        ) {
+            Text(
+                text = selectedOption.getDisplayName(),
+                style = AppTypography.bodyMedium,
+                color = colors.primary
             )
-        )
+            Icon(
+                imageVector = Icons.Default.ArrowDropDown,
+                contentDescription = "Select theme",
+                tint = colors.primary
+            )
+        }
+
+        // Dropdown Menu
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            ThemeMode.entries.forEach { theme ->
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = theme.getDisplayName(),
+                            style = AppTypography.bodyMedium
+                        )
+                    },
+                    onClick = {
+                        onOptionSelected(theme)
+                        expanded = false
+                    }
+                )
+            }
+        }
     }
 }
 

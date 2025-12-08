@@ -14,20 +14,21 @@ import org.ilerna.apidemoapp.ui.screen.home.HomeScreen
 import org.ilerna.apidemoapp.ui.screen.home.HomeViewModel
 import org.ilerna.apidemoapp.ui.screen.settings.SettingsScreen
 import org.ilerna.apidemoapp.ui.screen.settings.SettingsViewModel
+import org.ilerna.apidemoapp.ui.screen.settings.ThemeMode
 
 /**
  * NavigationWrapper - Centralized navigation configuration using NavHost
  *
  * @param navController Navigation controller passed from parent composable
  * @param settingsViewModel Shared ViewModel for settings
- * @param onDarkModeChanged Callback when dark mode is toggled
+ * @param onThemeChanged Callback when theme is changed
  * @param modifier Optional modifier
  */
 @Composable
 fun NavigationWrapper(
     navController: NavHostController,
     settingsViewModel: SettingsViewModel,
-    onDarkModeChanged: (Boolean) -> Unit,
+    onThemeChanged: (ThemeMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
     NavHost(
@@ -52,7 +53,7 @@ fun NavigationWrapper(
         composable<Destinations.Settings> {
             SettingsScreen(
                 viewModel = settingsViewModel,
-                onDarkModeChanged = onDarkModeChanged
+                onThemeChanged = onThemeChanged
             )
         }
 

@@ -19,7 +19,9 @@ import androidx.navigation.compose.rememberNavController
 import org.ilerna.apidemoapp.ui.navigation.NavigationWrapper
 import org.ilerna.apidemoapp.ui.components.BottomNavigationBar
 import org.ilerna.apidemoapp.ui.screen.settings.SettingsViewModel
+import org.ilerna.apidemoapp.ui.screen.settings.ThemeMode
 import org.ilerna.apidemoapp.ui.theme.AppTheme
+import androidx.compose.foundation.isSystemInDarkTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,9 +41,17 @@ fun MyApp() {
     var selectedItem: Int by remember { mutableIntStateOf(0) }
     val navController = rememberNavController()
     val settingsViewModel: SettingsViewModel = viewModel()
-    val isDarkMode by settingsViewModel.isDarkMode.collectAsState()
+    val currentTheme by settingsViewModel.currentTheme.collectAsState()
+    val isSystemInDarkTheme = isSystemInDarkTheme()
 
-    AppTheme(darkTheme = isDarkMode) {
+    // Determine dark theme based on current theme mode
+    val isDarkTheme = when (currentTheme) {
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+        ThemeMode.SYSTEM -> isSystemInDarkTheme
+    }
+
+    AppTheme(darkTheme = isDarkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             bottomBar = {
@@ -58,8 +68,8 @@ fun MyApp() {
             NavigationWrapper(
                 navController = navController,
                 settingsViewModel = settingsViewModel,
-                onDarkModeChanged = { enabled ->
-                    settingsViewModel.setDarkMode(enabled)
+                onThemeChanged = { theme ->
+                    settingsViewModel.setTheme(theme)
                 },
                 modifier = Modifier.padding(innerPadding)
             )
