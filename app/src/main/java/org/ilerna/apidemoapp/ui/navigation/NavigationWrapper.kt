@@ -10,6 +10,7 @@ import androidx.navigation.toRoute
 import org.ilerna.apidemoapp.ui.screen.details.DetailsScreen
 import org.ilerna.apidemoapp.ui.screen.details.DetailsViewModel
 import org.ilerna.apidemoapp.ui.screen.favorites.FavoritesScreen
+import org.ilerna.apidemoapp.ui.screen.favorites.FavoritesViewModel
 import org.ilerna.apidemoapp.ui.screen.home.HomeScreen
 import org.ilerna.apidemoapp.ui.screen.home.HomeViewModel
 import org.ilerna.apidemoapp.ui.screen.settings.SettingsScreen
@@ -47,7 +48,13 @@ fun NavigationWrapper(
         }
 
         composable<Destinations.Favorites> {
-            FavoritesScreen()
+            val viewModel: FavoritesViewModel = viewModel()
+            FavoritesScreen(
+                viewModel = viewModel,
+                onCharacterClick = { characterId ->
+                    navController.navigate(Destinations.Details(characterId))
+                }
+            )
         }
 
         composable<Destinations.Settings> {

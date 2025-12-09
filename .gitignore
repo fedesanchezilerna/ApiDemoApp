@@ -2,15 +2,19 @@
 .gradle
 /local.properties
 
-# IntelliJ
-/.idea/
+# IntelliJ IDEA
 .idea/
 
 # VS Code
 .vscode/
+
+# GitHub
 .github/
 
+# OS
 .DS_Store
+
+# Build
 /build
 /captures
 .externalNativeBuild
