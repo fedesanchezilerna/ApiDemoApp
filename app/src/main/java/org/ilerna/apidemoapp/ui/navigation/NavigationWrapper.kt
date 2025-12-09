@@ -41,6 +41,7 @@ fun NavigationWrapper(
             val viewModel: HomeViewModel = viewModel()
             HomeScreen(
                 viewModel = viewModel,
+                settingsViewModel = settingsViewModel,
                 onCharacterClick = { characterId ->
                     navController.navigate(Destinations.Details(characterId))
                 }
@@ -51,6 +52,7 @@ fun NavigationWrapper(
             val viewModel: FavoritesViewModel = viewModel()
             FavoritesScreen(
                 viewModel = viewModel,
+                settingsViewModel = settingsViewModel,
                 onCharacterClick = { characterId ->
                     navController.navigate(Destinations.Details(characterId))
                 }
