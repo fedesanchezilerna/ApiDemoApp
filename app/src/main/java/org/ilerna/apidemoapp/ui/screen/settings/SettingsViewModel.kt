@@ -17,7 +17,9 @@ class SettingsViewModel : ViewModel() {
     private val repository = Repository()
     
     private val _currentTheme = MutableStateFlow(ThemeMode.SYSTEM)
+    private val _currentCharactersViewMode = MutableStateFlow(CharacterViewMode.LIST)
     val currentTheme: StateFlow<ThemeMode> = _currentTheme.asStateFlow()
+    val currentCharactersViewMode: StateFlow<CharacterViewMode> = _currentCharactersViewMode.asStateFlow()
 
     /**
      * Set theme mode
@@ -25,7 +27,14 @@ class SettingsViewModel : ViewModel() {
     fun setTheme(theme: ThemeMode) {
         _currentTheme.value = theme
     }
-    
+
+    /**
+     * Set characters view mode
+     */
+    fun setCharactersView(viewMode: CharacterViewMode) {
+        _currentCharactersViewMode.value = viewMode
+    }
+
     /**
      * Delete all favorite characters from the database
      */

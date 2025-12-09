@@ -41,9 +41,11 @@ import org.ilerna.apidemoapp.ui.theme.AppTypography
 fun SettingsScreen(
     viewModel: SettingsViewModel,
     onThemeChanged: (ThemeMode) -> Unit = {},
+    onCharactersViewModeChanged: (CharacterViewMode) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val currentTheme by viewModel.currentTheme.collectAsState()
+    val currentCharactersViewMode by viewModel.currentCharactersViewMode.collectAsState()
     val colors = MaterialTheme.colorScheme
     var showDeleteConfirmDialog by remember { mutableStateOf(false) }
 
@@ -67,10 +69,25 @@ fun SettingsScreen(
             title = "Theme",
             description = "Select the theme for the app",
             selectedOption = currentTheme,
+            options = ThemeMode.entries,
             onOptionSelected = { theme ->
                 viewModel.setTheme(theme)
                 onThemeChanged(theme)
-            }
+            },
+            contentDescription = "Select theme"
+        )
+
+        // View Setting
+        SettingItemWithDropdown(
+            title = "View mode",
+            description = "Select the characters view mode",
+            selectedOption = currentCharactersViewMode,
+            options = CharacterViewMode.entries,
+            onOptionSelected = { viewMode ->
+                viewModel.setCharactersView(viewMode)
+                onCharactersViewModeChanged(viewMode)
+            },
+            contentDescription = "Select view mode"
         )
 
         // Delete All Favorites Setting
@@ -103,12 +120,12 @@ fun SettingsScreen(
 /**
  * ThemeMode - Enum for theme selection
  */
-enum class ThemeMode {
+enum class ThemeMode : DisplayableOption {
     LIGHT,
     DARK,
     SYSTEM;
 
-    fun getDisplayName(): String = when (this) {
+    override fun getDisplayName(): String = when (this) {
         LIGHT -> "Light"
         DARK -> "Dark"
         SYSTEM -> "System Default"
@@ -116,14 +133,45 @@ enum class ThemeMode {
 }
 
 /**
- * SettingItemWithDropdown - Reusable component for a setting with dropdown selector
+ * CharacterViewMode - Enum for character view mode selection
+ */
+enum class CharacterViewMode : DisplayableOption {
+    LIST,
+    GRID;
+
+    override fun getDisplayName(): String = when (this) {
+        LIST -> "List"
+        GRID -> "Grid"
+    }
+}
+
+/**
+ * Interface for types that can be displayed in a dropdown
+ */
+interface DisplayableOption {
+    fun getDisplayName(): String
+}
+
+/**
+ * SettingItemWithDropdown - Generic reusable component for a setting with dropdown selector
+ * 
+ * @param T The type of the options (must implement DisplayableOption)
+ * @param title The title of the setting
+ * @param description The description of the setting
+ * @param selectedOption The currently selected option
+ * @param options List of all available options
+ * @param onOptionSelected Callback when an option is selected
+ * @param contentDescription Content description for accessibility
+ * @param modifier Optional modifier
  */
 @Composable
-fun SettingItemWithDropdown(
+fun <T : DisplayableOption> SettingItemWithDropdown(
     title: String,
     description: String,
-    selectedOption: ThemeMode,
-    onOptionSelected: (ThemeMode) -> Unit,
+    selectedOption: T,
+    options: List<T>,
+    onOptionSelected: (T) -> Unit,
+    contentDescription: String = "Select option",
     modifier: Modifier = Modifier
 ) {
     val colors = MaterialTheme.colorScheme
@@ -163,7 +211,7 @@ fun SettingItemWithDropdown(
             )
             Icon(
                 imageVector = Icons.Default.ArrowDropDown,
-                contentDescription = "Select theme",
+                contentDescription = contentDescription,
                 tint = colors.primary
             )
         }
@@ -173,16 +221,16 @@ fun SettingItemWithDropdown(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            ThemeMode.entries.forEach { theme ->
+            options.forEach { option ->
                 DropdownMenuItem(
                     text = {
                         Text(
-                            text = theme.getDisplayName(),
+                            text = option.getDisplayName(),
                             style = AppTypography.bodyMedium
                         )
                     },
                     onClick = {
-                        onOptionSelected(theme)
+                        onOptionSelected(option)
                         expanded = false
                     }
                 )
