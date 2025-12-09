@@ -178,7 +178,7 @@ fun CharacterDetailsContent(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .padding(horizontal = 28.dp, vertical = 16.dp)
             )
         }
 
