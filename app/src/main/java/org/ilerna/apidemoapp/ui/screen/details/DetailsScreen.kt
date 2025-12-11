@@ -39,13 +39,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import org.ilerna.apidemoapp.domain.model.DBCharacter
 import org.ilerna.apidemoapp.domain.model.Planet
@@ -54,6 +52,8 @@ import org.ilerna.apidemoapp.ui.components.ImageViewerDialog
 import org.ilerna.apidemoapp.ui.components.InfoCard
 import org.ilerna.apidemoapp.ui.components.InfoRow
 import org.ilerna.apidemoapp.ui.theme.AppTypography
+import org.ilerna.apidemoapp.ui.theme.orangeGradientEnd
+import org.ilerna.apidemoapp.ui.theme.orangeGradientStart
 
 /**
  * DetailsScreen - Screen that displays detailed information about a character
@@ -139,7 +139,14 @@ fun CharacterDetailsContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(300.dp)
-                    .background(colors.primaryContainer)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                orangeGradientStart,
+                                orangeGradientEnd
+                            )
+                        )
+                    )
                     .clickable { showCharacterImage = true },
                 contentAlignment = Alignment.Center
             ) {
