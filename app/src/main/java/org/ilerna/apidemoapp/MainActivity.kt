@@ -14,11 +14,14 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import org.ilerna.apidemoapp.data.repository.SettingsRepository
 import org.ilerna.apidemoapp.ui.navigation.NavigationWrapper
 import org.ilerna.apidemoapp.ui.components.BottomNavigationBar
 import org.ilerna.apidemoapp.ui.screen.settings.SettingsViewModel
+import org.ilerna.apidemoapp.ui.screen.settings.SettingsViewModelFactory
 import org.ilerna.apidemoapp.ui.screen.settings.ThemeMode
 import org.ilerna.apidemoapp.ui.theme.AppTheme
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -40,7 +43,9 @@ class MainActivity : ComponentActivity() {
 fun MyApp() {
     var selectedItem: Int by remember { mutableIntStateOf(0) }
     val navController = rememberNavController()
-    val settingsViewModel: SettingsViewModel = viewModel()
+    val settingsViewModel: SettingsViewModel = viewModel(
+        factory = SettingsViewModelFactory(SettingsRepository(LocalContext.current))
+    )
     val currentTheme by settingsViewModel.currentTheme.collectAsState()
     val isSystemInDarkTheme = isSystemInDarkTheme()
 
