@@ -8,13 +8,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.ilerna.apidemoapp.domain.model.DBCharacter
-import org.ilerna.apidemoapp.domain.repository.Repository
+import org.ilerna.apidemoapp.domain.repository.CharacterRepository
 
 /**
  * DetailsViewModel - ViewModel for fetching and managing character details
  */
 class DetailsViewModel : ViewModel() {
-    private val repository = Repository()
+    private val characterRepository = CharacterRepository()
     private val _character = MutableLiveData<DBCharacter?>()
     val character = _character
 
@@ -36,7 +36,7 @@ class DetailsViewModel : ViewModel() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = repository.getCharacterById(characterId)
+                val response = characterRepository.getCharacterById(characterId)
                 withContext(Dispatchers.Main) {
                     _isLoading.value = false
                     if (response.isSuccessful) {
@@ -65,7 +65,7 @@ class DetailsViewModel : ViewModel() {
     private fun checkIsFavorite(characterId: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val isFav = repository.isFavorite(characterId)
+                val isFav = characterRepository.isFavorite(characterId)
                 withContext(Dispatchers.Main) {
                     _isFavorite.value = isFav
                 }
@@ -86,11 +86,11 @@ class DetailsViewModel : ViewModel() {
             try {
                 if (currentFavoriteStatus) {
                     // Remove from favorites
-                    repository.deleteFavorite(char.id)
+                    characterRepository.deleteFavorite(char.id)
                     Log.d("DetailsViewModel", "Character removed from favorites: ${char.name}")
                 } else {
                     // Add to favorites
-                    repository.saveAsFavorite(char)
+                    characterRepository.saveAsFavorite(char)
                     Log.d("DetailsViewModel", "Character added to favorites: ${char.name}")
                 }
                 withContext(Dispatchers.Main) {

@@ -8,16 +8,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.ilerna.apidemoapp.domain.model.CharactersResponse
-import org.ilerna.apidemoapp.domain.repository.Repository
+import org.ilerna.apidemoapp.domain.repository.CharacterRepository
 
 class HomeViewModel : ViewModel() {
-    private val repository = Repository()
+    private val characterRepository = CharacterRepository()
     private val _characters = MutableLiveData<CharactersResponse>()
     val characters = _characters
 
     fun getCharacters(page: Int = 1, limit: Int = 100) {
         CoroutineScope(Dispatchers.IO).launch {
-            val response = repository.getAllCharacters(page, limit)
+            val response = characterRepository.getAllCharacters(page, limit)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     _characters.value = response.body()

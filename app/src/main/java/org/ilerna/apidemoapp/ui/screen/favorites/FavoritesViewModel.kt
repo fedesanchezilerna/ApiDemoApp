@@ -8,13 +8,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.ilerna.apidemoapp.domain.model.DBCharacter
-import org.ilerna.apidemoapp.domain.repository.Repository
+import org.ilerna.apidemoapp.domain.repository.CharacterRepository
 
 /**
  * FavoritesViewModel - ViewModel for managing favorite characters
  */
 class FavoritesViewModel : ViewModel() {
-    private val repository = Repository()
+    private val characterRepository = CharacterRepository()
     private val _favorites = MutableLiveData<List<DBCharacter>>()
     val favorites = _favorites
 
@@ -29,7 +29,7 @@ class FavoritesViewModel : ViewModel() {
         
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val favoritesEntities = repository.getFavorites()
+                val favoritesEntities = characterRepository.getFavorites()
                 val favoritesList = favoritesEntities.map { entity ->
                     DBCharacter(
                         id = entity.id,

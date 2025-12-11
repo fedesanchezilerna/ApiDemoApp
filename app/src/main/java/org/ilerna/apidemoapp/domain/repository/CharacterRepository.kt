@@ -5,7 +5,7 @@ import org.ilerna.apidemoapp.data.local.entity.FavoriteCharacterEntity
 import org.ilerna.apidemoapp.data.remote.DragonBallApiInterface
 import org.ilerna.apidemoapp.domain.model.DBCharacter
 
-class Repository {
+class CharacterRepository {
     private val apiInterface = DragonBallApiInterface.Companion.create()
     private val daoInterface = CharacterApplication.database.characterDao()
 

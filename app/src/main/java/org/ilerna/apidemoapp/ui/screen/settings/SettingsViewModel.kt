@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.ilerna.apidemoapp.data.repository.SettingsRepository
-import org.ilerna.apidemoapp.domain.repository.Repository
+import org.ilerna.apidemoapp.domain.repository.CharacterRepository
 
 /**
  * SettingsViewModel - Manages settings state including theme preference
@@ -18,7 +18,7 @@ import org.ilerna.apidemoapp.domain.repository.Repository
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
-    private val repository = Repository()
+    private val characterRepository = CharacterRepository()
     
     private val _currentTheme = MutableStateFlow(loadThemeFromPreferences())
     private val _currentCharactersViewMode = MutableStateFlow(loadViewModeFromPreferences())
@@ -76,7 +76,7 @@ class SettingsViewModel(
      */
     fun deleteAllFavorites() {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteAllFavorites()
+            characterRepository.deleteAllFavorites()
         }
     }
 }
