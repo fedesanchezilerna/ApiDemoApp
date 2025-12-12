@@ -14,8 +14,17 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -51,6 +60,8 @@ fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
     val charactersResponse by viewModel.characters.observeAsState()
+    val filteredCharactersResponse by viewModel.filteredCharacters.observeAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
     val currentViewMode by settingsViewModel.currentCharactersViewMode.collectAsState()
     val listState = rememberLazyListState()
 
@@ -65,8 +76,27 @@ fun HomeScreen(
         // Fixed header with Dragon Ball logo
         DragonBallHeader()
 
+        // Search bar
+        SearchBar(
+            searchQuery = searchQuery,
+            onSearchQueryChange = { query ->
+                viewModel.searchCharacters(query)
+            },
+            onClearSearch = {
+                viewModel.clearSearch()
+            },
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+        )
+
         // Scrollable character list or grid based on view mode
-        charactersResponse?.items?.let { charactersList ->
+        // Use filtered results if search is active, otherwise show all characters
+        val displayCharacters = if (searchQuery.isNotBlank()) {
+            filteredCharactersResponse?.items
+        } else {
+            charactersResponse?.items
+        }
+
+        displayCharacters?.let { charactersList ->
             when (currentViewMode) {
                 CharacterViewMode.LIST -> {
                     LazyColumn(
@@ -134,5 +164,59 @@ fun DragonBallHeader(modifier: Modifier = Modifier) {
     HorizontalDivider(
         thickness = 4.dp,
         color = colors.primary
+    )
+}
+
+/**
+ * SearchBar - Search input field for filtering characters by name
+ *
+ * @param searchQuery Current search query
+ * @param onSearchQueryChange Callback when search query changes
+ * @param onClearSearch Callback to clear the search
+ * @param modifier Optional modifier
+ */
+@Composable
+fun SearchBar(
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    onClearSearch: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val colors = MaterialTheme.colorScheme
+
+    OutlinedTextField(
+        value = searchQuery,
+        onValueChange = onSearchQueryChange,
+        modifier = modifier.fillMaxWidth(),
+        placeholder = {
+            Text(
+                text = "Search characters",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = "Search icon",
+                tint = colors.primary,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+        },
+        trailingIcon = {
+            if (searchQuery.isNotEmpty()) {
+                IconButton(onClick = onClearSearch) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Clear search",
+                        tint = colors.onSurfaceVariant
+                    )
+                }
+            }
+        },
+        singleLine = true,
+        shape = RoundedCornerShape(12.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = colors.primary
+        )
     )
 }
