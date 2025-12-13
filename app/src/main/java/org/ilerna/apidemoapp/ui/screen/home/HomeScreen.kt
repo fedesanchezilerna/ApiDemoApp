@@ -37,6 +37,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ilerna.apidemoapp.R
 import org.ilerna.apidemoapp.ui.components.CharacterGridCard
 import org.ilerna.apidemoapp.ui.components.CharacterListCard
+import org.ilerna.apidemoapp.ui.components.DragonBallHeader
 import org.ilerna.apidemoapp.ui.screen.settings.CharacterViewMode
 import org.ilerna.apidemoapp.ui.screen.settings.SettingsViewModel
 
@@ -134,37 +135,6 @@ fun HomeScreen(
             }
         }
     }
-}
-
-/**
- * DragonBallHeader -  Fixed header with Dragon Ball logo
- *
- * This header remains visible even when scrolling the list
- */
-@Composable
-fun DragonBallHeader(modifier: Modifier = Modifier) {
-    val colors = MaterialTheme.colorScheme
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        // Dragon Ball logo
-        Image(
-            painter = painterResource(id = R.drawable.dragon_ball_header),
-            contentDescription = "Dragon Ball logo",
-            modifier = Modifier
-                .height(60.dp)
-                .padding(horizontal = 8.dp)
-        )
-    }
-
-    HorizontalDivider(
-        thickness = 4.dp,
-        color = colors.primary
-    )
 }
 
 /**

@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.ilerna.apidemoapp.ui.components.ConfirmationDialog
+import org.ilerna.apidemoapp.ui.components.DragonBallHeader
 import org.ilerna.apidemoapp.ui.theme.AppTypography
 
 /**
@@ -51,17 +52,22 @@ fun SettingsScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Header
-        Text(
-            text = "Settings",
-            style = AppTypography.headlineMedium,
-            color = colors.primary,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
+        // Fixed header
+        DragonBallHeader()
+
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Header
+            Text(
+                text = "Settings",
+                style = AppTypography.headlineMedium,
+                color = colors.primary,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
 
         // Theme Setting
         SettingItemWithDropdown(
@@ -96,6 +102,7 @@ fun SettingsScreen(
             buttonText = "Delete",
             onButtonClick = { showDeleteConfirmDialog = true }
         )
+        }
     }
     
     // Delete Confirmation Dialog
